@@ -1,6 +1,7 @@
 _G.love = require "love"
 local button = require "button"
 local radio_button = require "radio_button"
+local side_bar = require "side_bar"
 
 States = {
     menu = "menu",
@@ -42,19 +43,25 @@ function love.load()
     buttons.menu_state.quit_game = button("Quit", love.event.quit, nil, 120, 40) -- play game button
 
     buttons.sub_menu_state.back = button("Back", changeState, States.menu, 120, 40) -- back button_x
-    buttons.sub_menu_state.operations = radio_button({"or", "and", "not"}, 20) -- back button_x
+    buttons.sub_menu_state.operations = radio_button({"or", "and", "xor"}, 20, "Operations:") -- back button_x
+    buttons.sub_menu_state.robot_type = radio_button({"grande", "normal", "rapidão"}, 20, "Robot type:") -- back button_x
 end
 
 function love.update(dt)
 end
 
 function love.draw()
-    love.graphics.printf("FPS: " .. love.timer.getFPS(), love.graphics.newFont(16), 10, love.graphics.getHeight() - 30, love.graphics.getWidth())
 
     if game.state == States.sub_menu then
-        buttons.sub_menu_state.operations:draw(10, 20)
-        -- buttons.sub_menu_state.back:draw(10, 20, 17, 10)
-        
+        side_bar(200, "Options"):draw() -- draw the bottom bar
+
+        buttons.sub_menu_state.operations:draw(10, 70)
+        buttons.sub_menu_state.robot_type:draw(10, buttons.sub_menu_state.operations:getHeight() + 90)
+        buttons.sub_menu_state.back:draw(10, love.graphics.getHeight() - 50 , 17, 10)
+
+        love.graphics.setColor(1, 1, 1) -- set text color
+        love.graphics.print("Operations:" .. buttons.sub_menu_state.operations.selected_option, 200, 300)
+
     elseif game.state == States.menu then -- if we're at the menu, draw the buttons
         buttons.menu_state.play_game:draw(10, 20, 17, 10)
         buttons.menu_state.quit_game:draw(10, 70, 17, 10)

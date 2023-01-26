@@ -1,9 +1,12 @@
-local button = require "button"
+local love = require "love"
 
-function radio_button(options, button_size)
+function radio_button(options, button_size, text)
     return{
-        button_size = button_size or 20,
-        selected_option = 1,
+        text = text or "No Text", -- text to be displayed on the button
+        button_size = button_size or 20, -- button width
+        selected_option = 1, 
+        text_x = 0, -- text x/y position
+        text_y = 0, -- text x/y position
         button_x = 0, -- button x/y position
         button_y = 0, -- button x/y position
 
@@ -17,10 +20,16 @@ function radio_button(options, button_size)
         end,
 
         draw = function (self, button_x, button_y) -- draw the button
+            self.text_x = button_x or self.text_x -- set the button at it's x/y position
+            -- the above and below steps are important for the checkPressed method as well
+            self.text_y = button_y or self.text_y -- set the button at it's x/y position
+
+            love.graphics.setColor(0, 0, 0) -- set text color
+            love.graphics.print(self.text, self.text_x, self.text_y)
+            
             self.button_x = button_x or self.button_x -- set the button at it's x/y position
             -- the above and below steps are important for the checkPressed method as well
-            self.button_y = button_y or self.button_y -- set the button at it's x/y position
-
+            self.button_y = (button_y or self.button_y) + love.graphics.getFont():getHeight(self.text) + 10 -- set the button at it's x/y position
             for i, option in ipairs(options) do
                 if i == self.selected_option then
                     love.graphics.setColor(1, 0, 0) -- red color if selected
@@ -36,6 +45,9 @@ function radio_button(options, button_size)
         
             end
         end,
+        getHeight = function (self)
+            return love.graphics.getFont():getHeight(self.text) + 10 + #options*self.button_size
+        end
     }
 end
 
