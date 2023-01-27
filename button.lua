@@ -28,22 +28,14 @@ function Button(text, func, func_param, width, height)
             end
         end,
 
-        draw = function (self, button_x, button_y, text_x, text_y) -- draw the button
+        draw = function (self, button_x, button_y) -- draw the button
             self.button_x = button_x or self.button_x -- set the button at it's x/y position
             -- the above and below steps are important for the checkPressed method as well
             self.button_y = button_y or self.button_y -- set the button at it's x/y position
         
-            if text_x then -- set text x position
-                self.text_x = text_x + self.button_x
-            else
-                self.text_x = self.button_x
-            end
-        
-            if text_y then -- set text y position
-                self.text_y = text_y + self.button_y
-            else
-                self.text_y = self.button_y
-            end
+            -- calculate the text x/y position
+            self.text_x = self.button_x + (self.width / 2) - (love.graphics.getFont():getWidth(self.text) / 2)
+            self.text_y = self.button_y + (self.height / 2) - (love.graphics.getFont():getHeight(self.text) / 2)
 
         
             -- NOTE: The drawing order is important
@@ -57,6 +49,12 @@ function Button(text, func, func_param, width, height)
         
             love.graphics.setColor(1, 1, 1) -- reset the colors
         end,
+        getWidth = function (self) -- get the button width
+            return self.width
+        end,
+        getHeight = function (self) -- get the button height
+            return self.height
+        end
     }
 end
 
